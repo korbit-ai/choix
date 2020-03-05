@@ -69,12 +69,12 @@ def lsr_pairwise(n_items, data, alpha=0.0, chain=None, initial_params=None):
     else:
         weights = exp_transform(initial_params)
 
-    if chain is None: chain = alpha * np.ones((n_items, n_items), dtype=float)
-    
+    if chain is None: temp_chain = alpha * np.ones((n_items, n_items), dtype=float)
+    else: temp_chain = np.copy(chain)
     for winner, loser in data:
-        chain[loser, winner] += 1 / (weights[winner] + weights[loser])
-    chain -= np.diag(chain.sum(axis=1))
-    return log_transform(statdist(chain))
+        temp_chain[loser, winner] += 1 / (weights[winner] + weights[loser])
+    temp_chain -= np.diag(temp_chain.sum(axis=1))
+    return log_transform(statdist(temp_chain))
 
 
 def ilsr_pairwise(
@@ -198,6 +198,7 @@ def ilsr_pairwise_dense(
     params : numpy.ndarray
         The ML estimate of model parameters.
     """
+    
     fun = functools.partial(
             lsr_pairwise_dense, comp_mat=comp_mat, alpha=alpha)
     return _ilsr(fun, initial_params, max_iter, tol)
