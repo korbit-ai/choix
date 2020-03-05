@@ -33,7 +33,7 @@ def _ilsr(fun, params, max_iter, tol):
     raise RuntimeError("Did not converge after {} iterations".format(max_iter))
 
 
-def lsr_pairwise(n_items, data, alpha=0.0, initial_params=None):
+def lsr_pairwise(n_items, data, alpha=0.0, chain=None, initial_params=None):
     """Compute the LSR estimate of model parameters.
 
     This function implements the Luce Spectral Ranking inference algorithm
@@ -64,7 +64,13 @@ def lsr_pairwise(n_items, data, alpha=0.0, initial_params=None):
     params : numpy.ndarray
         An estimate of model parameters.
     """
-    weights, chain = _init_lsr(n_items, alpha, initial_params)
+    if initial_params is None:
+        weights = np.ones(n_items)
+    else:
+        weights = exp_transform(initial_params)
+
+    if chain is None: chain = alpha * np.ones((n_items, n_items), dtype=float)
+    
     for winner, loser in data:
         chain[loser, winner] += 1 / (weights[winner] + weights[loser])
     chain -= np.diag(chain.sum(axis=1))
