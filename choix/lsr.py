@@ -111,7 +111,7 @@ def ilsr_pairwise(
         The ML estimate of model parameters.
     """
     fun = functools.partial(
-            lsr_pairwise, n_items=n_items, data=data, alpha=alpha, chain=None)
+            lsr_pairwise, n_items=n_items, data=data, alpha=alpha, chain=chain)
     return _ilsr(fun, initial_params, max_iter, tol)
 
 
