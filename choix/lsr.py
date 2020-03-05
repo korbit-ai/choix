@@ -78,7 +78,7 @@ def lsr_pairwise(n_items, data, alpha=0.0, chain=None, initial_params=None):
 
 
 def ilsr_pairwise(
-        n_items, data, alpha=0.0, initial_params=None, max_iter=100, tol=1e-8):
+        n_items, data, alpha=0.0, chain=None, initial_params=None, max_iter=100, tol=1e-8):
     """Compute the ML estimate of model parameters using I-LSR.
 
     This function computes the maximum-likelihood (ML) estimate of model
@@ -111,7 +111,7 @@ def ilsr_pairwise(
         The ML estimate of model parameters.
     """
     fun = functools.partial(
-            lsr_pairwise, n_items=n_items, data=data, alpha=alpha)
+            lsr_pairwise, n_items=n_items, data=data, alpha=alpha, chain=None)
     return _ilsr(fun, initial_params, max_iter, tol)
 
 
